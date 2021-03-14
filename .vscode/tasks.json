@@ -6,7 +6,15 @@
         {
             "label": "tsc config",
             "type": "shell",
-            "command": "tsc",
+            "command": "tsc"
+        },
+        {
+            "type": "npm",
+            "script": "build",
+            "group": "build",
+            "problemMatcher": [],
+            "label": "npm: build",
+            "detail": "webpack"
         }
     ],
     "problemMatcher": "$tsc-watch",

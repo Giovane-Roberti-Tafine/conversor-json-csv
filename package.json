@@ -1,0 +1,26 @@
+{
+    "name": "conversorjsoncsv",
+    "version": "1.0.0",
+    "description": "",
+    "private": true,
+    "scripts": {
+        "test": "tsc --watch",
+        "build": "webpack"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Giovane-Roberti-Tafine/conversor-json-csv.git"
+    },
+    "author": "Giovane Roberti Tafine",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/Giovane-Roberti-Tafine/conversor-json-csv/issues"
+    },
+    "homepage": "https://github.com/Giovane-Roberti-Tafine/conversor-json-csv#readme",
+    "devDependencies": {
+        "ts-loader": "^8.0.18",
+        "typescript": "^4.2.3",
+        "webpack": "^5.25.0",
+        "webpack-cli": "^4.5.0"
+    }
+}
