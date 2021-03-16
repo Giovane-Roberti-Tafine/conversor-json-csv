@@ -15,6 +15,14 @@
             "problemMatcher": [],
             "label": "npm: build",
             "detail": "webpack"
+        },
+        {
+            "type": "npm",
+            "script": "serve",
+            "group": "build",
+            "problemMatcher": [],
+            "label": "npm: serve",
+            "detail": "webpack-dev-server"
         }
     ],
     "problemMatcher": "$tsc-watch",

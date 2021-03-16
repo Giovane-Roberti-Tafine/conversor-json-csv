@@ -5,6 +5,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 module.exports = {
     devtool: 'eval-source-map',
     entry: './src/js/index.ts',
+    mode: 'production',
     module: {
         rules: [
             {
@@ -26,7 +27,17 @@ module.exports = {
                     'style-loader',
                     'css-loader'
                 ]
-            }
+            },
+            // {
+            //     test: /\.js$/,
+            //     exclude: /node_modules/,
+            //     use: {
+            //         loader: 'babel-loader',
+            //         options: {
+            //             presets: ['@babel/preset-env']
+            //         }
+            //     }
+            // }
         ]
     },
     output: {

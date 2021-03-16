@@ -1,4 +1,4 @@
-import 'bootstrap';
+import 'bootstrap/dist/js/bootstrap.min.js';
 import '../styles/stylesheet.scss';
 import * as $ from 'jquery';
 
@@ -18,8 +18,6 @@ class ConverterJsonCsv {
 1,Sam Smith
 2,Fred Frankly
 1,Zachary Zupers`;
-        const objeto = {};
-        console.log(objeto['spartan']);
 
     }
 
