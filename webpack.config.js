@@ -18,7 +18,8 @@ module.exports = {
                 use: [
                     MiniCssExtractPlugin.loader,
                     'css-loader',
-                    'sass-loader'
+                    'sass-loader',
+                    // 'style-loader'
                 ]
             },
             {
@@ -28,6 +29,22 @@ module.exports = {
                     'css-loader'
                 ]
             },
+            // {
+            //     test: /\.(eot|ttf|otf)(\?.*)?$/,
+            //     loader: 'file-loader',
+            //     options: {
+            //         limit: 10000,
+            //         name: '[name].[ext]',
+            //         outputPath: '/fonts/',    // where the fonts will go
+            //         publicPath: '/assets'       // override the default path
+            //     }
+            // }
+            {
+                test: /\.(ttf|eot|svg|gif|woff|woff2)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                use: [{
+                    loader: 'file-loader',
+                }]
+            }
             // {
             //     test: /\.js$/,
             //     exclude: /node_modules/,
