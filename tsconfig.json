@@ -2,10 +2,13 @@
     "compilerOptions": {
         "target": "ESNext",
         "outDir": "src",
+        "module": "CommonJS",
         "sourceMap": true
     },
     "include": [
-        "src"
+        "src/**/*"
     ],
-    "exclude": []
+    "exclude": [
+        "node_modules",
+    ]
 }

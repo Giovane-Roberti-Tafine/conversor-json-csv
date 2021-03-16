@@ -1,6 +1,6 @@
-// import 'bootstrap';
-// import './css/stylesheet.scss';
-// import * as $ from 'jquery';
+import 'bootstrap';
+import '../styles/stylesheet.scss';
+import * as $ from 'jquery';
 
 window.onload = function () {
     new ConverterJsonCsv();
@@ -13,12 +13,14 @@ class ConverterJsonCsv {
     constructor() {
         document.getElementById("converterCsv").onclick = () => this.converterCsv();
         document.getElementById("converterJson").onclick = () => this.converterJson();
-        // document.getElementById("closeAlert").onclick = () => $('#myAlert').hide('slow');
-
+        document.getElementById("closeAlert").onclick = () => $('#myAlert').hide('slow');
         this.textJsonCsv.value = `Id,UserName
 1,Sam Smith
 2,Fred Frankly
 1,Zachary Zupers`;
+        const objeto = {};
+        console.log(objeto['spartan']);
+
     }
 
     converterCsv(): void {
@@ -138,9 +140,11 @@ class ConverterJsonCsv {
     }
 
     alert(): void {
-        // $('#myAlert').show('fast');
-        // setTimeout(() => {
-        //     $('#myAlert').hide('slow');
-        // }, 2000);
+        $('#myAlert').show('fast');
+        setTimeout(() => {
+            $('#myAlert').hide('slow');
+        }, 2000);
     }
+
+
 }
