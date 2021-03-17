@@ -28,9 +28,11 @@
                         <textarea name="textJsonCsv" class="form-control" id="textJsonCsv" cols="30"
                             rows="10"></textarea>
                         <div class="text-center mt-3">
-                            <label class="btn btn-success w-100 label-upload" for="selecao-arquivo">
+                            <label
+                                class="btn btn-success w-100 label-upload d-flex justify-content-center align-items-center"
+                                for="selecao-arquivo">
                                 <i class="fa fa-upload fa-lg fa-inverse " aria-hidden="true"></i>
-                                Upload de arquivo
+                                <span class="text-truncate d-inline-block ml-2" id="text-file"></span>
                             </label>
                             <input id="selecao-arquivo" type="file" accept=".csv, .json">
                         </div>

@@ -8,6 +8,7 @@ class ConverterJsonCsv {
     public textJsonCsv = (<HTMLTextAreaElement>document.getElementById("textJsonCsv"));
     public incluirNullable = <HTMLInputElement>document.getElementById("incluirNullable");
     public resultJsonCsv = (<HTMLTextAreaElement>document.getElementById("resultJsonCsv"));
+    public textFile = (<HTMLElement>document.getElementById("text-file"));
 
     constructor() {
         $(function () {
@@ -16,8 +17,10 @@ class ConverterJsonCsv {
         document.getElementById("converterCsv").onclick = () => this.converterCsv();
         document.getElementById("converterJson").onclick = () => this.converterJson();
         document.getElementById("closeAlert").onclick = () => $('#myAlert').hide('slow');
-        this.textJsonCsv.value = `[{"Id": "1","UserName": "Sam Smith","awd": "12"},{"Id": "2","UserName": "Fred Frankly","awd": ""},{"Id": "1","UserName": "Zachary Zupers","awd": ""}]`;
 
+        document.getElementById("selecao-arquivo").onchange = (ev) => this.selecaoArquivo(ev);
+        this.textJsonCsv.value = `[{"Id": "1","UserName": "Sam Smith","awd": "12"},{"Id": "2","UserName": "Fred Frankly","awd": ""},{"Id": "1","UserName": "Zachary Zupers","awd": ""}]`;
+        this.textFile.innerText = 'Upload de arquivo';
     }
 
     converterCsv(): void {
@@ -175,6 +178,7 @@ class ConverterJsonCsv {
 
     }
 
+
     alert(): void {
         $('#myAlert').show('fast');
         setTimeout(() => {
@@ -182,5 +186,20 @@ class ConverterJsonCsv {
         }, 2000);
     }
 
+    async selecaoArquivo(event) {
+        const reader = new FileReader();
+        if ((event.target as HTMLInputElement).files[0]) {
+            let resolve = await new Promise<any>((resolve) => {
+                reader.readAsDataURL((event.target as HTMLInputElement).files[0]);
+                console.log((event.target as HTMLInputElement).files[0].type);
+                this.textFile.innerText = (event.target as HTMLInputElement).files[0].name;
+                reader.onload = () => {
+                    let str = reader.result.toString().split(',');
+                    resolve(atob(str[1]));
+                };
+            });
+            this.textJsonCsv.value = resolve;
+        }
+    }
 
 }
