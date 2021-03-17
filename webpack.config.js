@@ -1,6 +1,8 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const webpack = require('webpack');
+const MergeIntoSingleFilePlugin = require('webpack-merge-and-include-globally');
 
 module.exports = {
     devtool: 'eval-source-map',
@@ -72,6 +74,11 @@ module.exports = {
         }),
         new MiniCssExtractPlugin({
             filename: 'stylesheet.css',
-        })
+        }),
+        new webpack.ProvidePlugin({
+            $: "jquery",
+            jQuery: "jquery",
+            Popper: ['popper.js', 'default'],
+        }),
     ]
 };

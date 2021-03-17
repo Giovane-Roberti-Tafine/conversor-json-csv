@@ -4,3 +4,21 @@
 $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 @import '~@fortawesome/fontawesome-free/scss/fontawesome';
 @import '~@fortawesome/fontawesome-free/scss/solid';
+
+.tooltip.show {
+    // text-align: center;
+}
+
+/* Esconde o input */
+input[type='file'] {
+    display: none
+}
+  
+  /* Aparência que terá o seletor de arquivo */
+.label-upload {
+    color: #fff;
+    cursor: pointer;
+    
+    // margin: 10px;
+    // padding: 6px 20px
+}

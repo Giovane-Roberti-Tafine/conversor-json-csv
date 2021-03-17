@@ -1,6 +1,5 @@
-import 'bootstrap/dist/js/bootstrap.min.js';
 import '../styles/stylesheet.scss';
-import * as $ from 'jquery';
+import 'bootstrap/dist/js/bootstrap.min.js';
 
 window.onload = function () {
     new ConverterJsonCsv();
@@ -11,13 +10,13 @@ class ConverterJsonCsv {
     public resultJsonCsv = (<HTMLTextAreaElement>document.getElementById("resultJsonCsv"));
 
     constructor() {
+        $(function () {
+            (<any>$('[data-toggle="tooltip"]')).tooltip();
+        });
         document.getElementById("converterCsv").onclick = () => this.converterCsv();
         document.getElementById("converterJson").onclick = () => this.converterJson();
         document.getElementById("closeAlert").onclick = () => $('#myAlert').hide('slow');
-        this.textJsonCsv.value = `Id,UserName
-1,Sam Smith
-2,Fred Frankly
-1,Zachary Zupers`;
+        this.textJsonCsv.value = `[{"Id": "1","UserName": "Sam Smith","awd": "12"},{"Id": "2","UserName": "Fred Frankly","awd": ""},{"Id": "1","UserName": "Zachary Zupers","awd": ""}]`;
 
     }
 
@@ -58,6 +57,22 @@ class ConverterJsonCsv {
                 Object.keys(jsonConvertido[0]).forEach((element, index, array) => {
                     keys += element + (index === array.length - 1 ? '' : ';');
                 });
+                let keysNullable: string[] = [];
+                jsonConvertido.map((element) => {
+                    Object.keys(element).map((key, index, array) => {
+                        if (!element[key] && keysNullable.indexOf(key) === -1) {
+                            keysNullable.push(key);
+                        }
+                    });
+                });
+
+                let arrayKeys = keys.split(';');
+                keysNullable.map((key) => {
+                    let index = arrayKeys.indexOf(key);
+                    arrayKeys.splice(index, 1);
+                });
+
+                keys = arrayKeys.join(';');
             }
 
             jsonConvertido.forEach(element => {
@@ -130,6 +145,29 @@ class ConverterJsonCsv {
             } catch (error) {
                 this.alert();
                 return;
+            }
+
+            if (!this.incluirNullable.checked) {
+                let jsonNullable = JSON.parse(jsonConvertido);
+                let objNullable: string[] = [];
+                jsonNullable.map((obj) => {
+                    props.map((key) => {
+                        if (!obj[key]) {
+                            objNullable.indexOf(key) !== -1 ? '' : objNullable.push(key);
+                        }
+                    });
+                });
+
+                if (objNullable.length !== 0) {
+                    jsonNullable.map((obj) => {
+                        objNullable.map((keyNullable) => {
+                            delete obj[keyNullable];
+                        });
+
+                    });
+
+                    jsonConvertido = JSON.stringify(jsonNullable);
+                }
             }
         }
 
