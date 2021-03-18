@@ -1,9 +1,11 @@
 import '../styles/stylesheet.scss';
 import 'bootstrap/dist/js/bootstrap.min.js';
+import { saveAs } from 'file-saver/FileSaver.min.js';
 
 window.onload = function () {
     new ConverterJsonCsv();
 };
+
 class ConverterJsonCsv {
     public textJsonCsv = (<HTMLTextAreaElement>document.getElementById("textJsonCsv"));
     public incluirNullable = <HTMLInputElement>document.getElementById("incluirNullable");
@@ -12,6 +14,8 @@ class ConverterJsonCsv {
     public timeAlert = null;
     public timeClick = null;
     public longClick = false;
+    public typeFile: 'application/json' | 'application/vnd.ms-excel';
+
     constructor() {
         $(function () {
             (<any>$('[data-toggle="tooltip"]')).tooltip();
@@ -22,17 +26,18 @@ class ConverterJsonCsv {
 
         document.getElementById("selecao-arquivo").onchange = (ev) => this.selecaoArquivo(ev);
         document.getElementById("copiar-resultado").onclick = () => this.copiarResultado();
+
         document.getElementById("limpar-campos").onmousedown = () => {
             this.timeClick = setTimeout(() => {
-                console.log("mousedow", this.longClick);
                 this.limparCampos();
             }, 2000);
         };
         document.getElementById("limpar-campos").onmouseup = () => {
-            console.log("mouseup", this.longClick);
             clearTimeout(this.timeClick);
             this.limparResultado();
         };
+
+        document.getElementById("salvar-resultado").onclick = () => this.salvarResultado();
         this.textJsonCsv.value = `[{"Id": "1","UserName": "Sam Smith","awd": "12"},{"Id": "2","UserName": "Fred Frankly","awd": ""},{"Id": "1","UserName": "Zachary Zupers","awd": ""}]`;
         this.textFile.innerText = 'Upload de arquivo';
     }
@@ -43,7 +48,7 @@ class ConverterJsonCsv {
         try {
             jsonConvertido = JSON.parse(this.textJsonCsv.value.trim());
         } catch (error) {
-            this.alert();
+            this.alert('Entrada Inválida');
             return;
         }
 
@@ -98,7 +103,7 @@ class ConverterJsonCsv {
                 } else {
                     Object.keys(element).map((key, i, array) => {
                         if (arrayKeys.indexOf(key) !== -1) {
-                            strValues += element[key] ?? '' + (i === arrayKeys.length - 1 ? '' : ';');
+                            strValues += (element[key] ?? '') + (i === arrayKeys.length - 1 ? '' : ';');
                         }
 
                     });
@@ -111,18 +116,19 @@ class ConverterJsonCsv {
             str = keys + str;
         }
 
+        this.typeFile = 'application/vnd.ms-excel';
         this.resultJsonCsv.value = str;
     }
 
     converterJson(): void {
         const arrayTest = this.textJsonCsv.value.trim().split(',');
 
-        if (!arrayTest) return this.alert();
+        if (!arrayTest) return this.alert('Entrada Inválida');
 
         for (var i = 0; i < arrayTest.length; i++) {
             const item = String(arrayTest[i]).trim();
 
-            if (!item.length) return this.alert();
+            if (!item.length) return this.alert('Entrada Inválida');
         }
 
         let arrayText = [];
@@ -164,7 +170,7 @@ class ConverterJsonCsv {
             try {
                 JSON.parse(jsonConvertido);
             } catch (error) {
-                this.alert();
+                this.alert('Entrada Inválida');
                 return;
             }
 
@@ -191,14 +197,13 @@ class ConverterJsonCsv {
                 }
             }
         }
-
+        this.typeFile = 'application/json';
         this.resultJsonCsv.value = jsonConvertido;
 
     }
 
-
-    alert(): void {
-        $('#text-alert').empty().append('Entrada Inválida');
+    alert(mensagem?: string): void {
+        $('#text-alert').empty().append(mensagem);
         $('#myAlert')
             .show('fast')
             .removeClass('alert-success')
@@ -253,5 +258,15 @@ class ConverterJsonCsv {
         }, 2000);
     }
 
-
+    salvarResultado(): void {
+        if (!this.resultJsonCsv.value) return this.alert('Nenhum Resultado Obtido');
+        let nomeArquivo = '';
+        if (this.typeFile === 'application/json') {
+            nomeArquivo = 'resultado.json';
+        } else {
+            nomeArquivo = 'resultado.csv';
+        }
+        var file = new File([this.resultJsonCsv.value], nomeArquivo, { type: `${this.typeFile};charset=utf-8` });
+        saveAs(file);
+    }
 }

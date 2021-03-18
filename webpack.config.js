@@ -2,7 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const webpack = require('webpack');
-const MergeIntoSingleFilePlugin = require('webpack-merge-and-include-globally');
+// const MergeIntoSingleFilePlugin = require('webpack-merge-and-include-globally');
 
 module.exports = {
     devtool: 'eval-source-map',
@@ -46,7 +46,7 @@ module.exports = {
                 use: [{
                     loader: 'file-loader',
                 }]
-            }
+            },
             // {
             //     test: /\.js$/,
             //     exclude: /node_modules/,
@@ -56,7 +56,19 @@ module.exports = {
             //             presets: ['@babel/preset-env']
             //         }
             //     }
-            // }
+            // },
+            // new MergeIntoSingleFilePlugin({
+            //     files: {
+            //         'bundle.js': [
+            //             'node_modules/jquery/**/*.min.js',
+            //             'node_modules/popper.js/dist/popper.min.js',
+            //             'node_modules/file-saver/FileSaver.min.js'
+            //         ],
+            //         'style.css': [
+            //             'src/styles/stylesheet.scss'
+            //         ]
+            //     }
+            // })
         ]
     },
     output: {
@@ -78,6 +90,7 @@ module.exports = {
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery",
+            _: "file-saver",
             Popper: ['popper.js', 'default'],
         }),
     ]
