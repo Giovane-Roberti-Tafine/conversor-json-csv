@@ -47,29 +47,26 @@ class ConverterJsonCsv {
             });
         } else {
             let keys: string = '';
-            if (this.incluirNullable.checked) {
-                let arrayKeys: string[] = [];
-                (jsonConvertido as Array<any>).map((element) => {
-                    Object.keys(element).forEach(element => {
-                        if (arrayKeys.indexOf(element) === -1)
-                            arrayKeys.push(element);
-                    });
+            let arrayKeys: string[] = [];
+            (jsonConvertido as Array<any>).map((element) => {
+                Object.keys(element).forEach(element => {
+                    if (arrayKeys.indexOf(element) === -1)
+                        arrayKeys.push(element);
                 });
+            });
+            if (this.incluirNullable.checked) {
                 keys = arrayKeys.join(';');
             } else {
-                Object.keys(jsonConvertido[0]).forEach((element, index, array) => {
-                    keys += element + (index === array.length - 1 ? '' : ';');
-                });
                 let keysNullable: string[] = [];
                 jsonConvertido.map((element) => {
-                    Object.keys(element).map((key, index, array) => {
+                    arrayKeys.map((key, index, array) => {
+                        console.log(key, element[key]);
                         if (!element[key] && keysNullable.indexOf(key) === -1) {
                             keysNullable.push(key);
                         }
                     });
                 });
 
-                let arrayKeys = keys.split(';');
                 keysNullable.map((key) => {
                     let index = arrayKeys.indexOf(key);
                     arrayKeys.splice(index, 1);
@@ -78,15 +75,23 @@ class ConverterJsonCsv {
                 keys = arrayKeys.join(';');
             }
 
-            jsonConvertido.forEach(element => {
+            jsonConvertido.map(element => {
                 let strValues = "";
-                Object.values(element).map((el, i, array) => {
-                    if (this.incluirNullable.checked) {
-                        strValues += el + (i === array.length - 1 ? '' : ';');
-                    } else if (i < keys.split(';').length) {
-                        strValues += el + (i === keys.split(';').length - 1 ? '' : ';');
-                    }
-                });
+
+                if (this.incluirNullable.checked) {
+                    arrayKeys.map((key, i, array) => {
+                        strValues += (element[key] ?? '') + (i === array.length - 1 ? '' : ';');
+                    });
+                } else {
+                    Object.keys(element).map((key, i, array) => {
+                        if (arrayKeys.indexOf(key) !== -1) {
+                            strValues += element[key] ?? '' + (i === arrayKeys.length - 1 ? '' : ';');
+                        }
+
+                    });
+
+                }
+
                 str += "\n" + strValues;
             });
 
@@ -191,13 +196,13 @@ class ConverterJsonCsv {
         if ((event.target as HTMLInputElement).files[0]) {
             let resolve = await new Promise<any>((resolve) => {
                 reader.readAsDataURL((event.target as HTMLInputElement).files[0]);
-                console.log((event.target as HTMLInputElement).files[0].type);
                 this.textFile.innerText = (event.target as HTMLInputElement).files[0].name;
                 reader.onload = () => {
                     let str = reader.result.toString().split(',');
                     resolve(atob(str[1]));
                 };
             });
+            $("#selecao-arquivo").val('');
             this.textJsonCsv.value = resolve;
         }
     }
