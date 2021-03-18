@@ -9,7 +9,9 @@ class ConverterJsonCsv {
     public incluirNullable = <HTMLInputElement>document.getElementById("incluirNullable");
     public resultJsonCsv = (<HTMLTextAreaElement>document.getElementById("resultJsonCsv"));
     public textFile = (<HTMLElement>document.getElementById("text-file"));
-
+    public timeAlert = null;
+    public timeClick = null;
+    public longClick = false;
     constructor() {
         $(function () {
             (<any>$('[data-toggle="tooltip"]')).tooltip();
@@ -19,6 +21,18 @@ class ConverterJsonCsv {
         document.getElementById("closeAlert").onclick = () => $('#myAlert').hide('slow');
 
         document.getElementById("selecao-arquivo").onchange = (ev) => this.selecaoArquivo(ev);
+        document.getElementById("copiar-resultado").onclick = () => this.copiarResultado();
+        document.getElementById("limpar-campos").onmousedown = () => {
+            this.timeClick = setTimeout(() => {
+                console.log("mousedow", this.longClick);
+                this.limparCampos();
+            }, 2000);
+        };
+        document.getElementById("limpar-campos").onmouseup = () => {
+            console.log("mouseup", this.longClick);
+            clearTimeout(this.timeClick);
+            this.limparResultado();
+        };
         this.textJsonCsv.value = `[{"Id": "1","UserName": "Sam Smith","awd": "12"},{"Id": "2","UserName": "Fred Frankly","awd": ""},{"Id": "1","UserName": "Zachary Zupers","awd": ""}]`;
         this.textFile.innerText = 'Upload de arquivo';
     }
@@ -60,7 +74,6 @@ class ConverterJsonCsv {
                 let keysNullable: string[] = [];
                 jsonConvertido.map((element) => {
                     arrayKeys.map((key, index, array) => {
-                        console.log(key, element[key]);
                         if (!element[key] && keysNullable.indexOf(key) === -1) {
                             keysNullable.push(key);
                         }
@@ -185,8 +198,13 @@ class ConverterJsonCsv {
 
 
     alert(): void {
-        $('#myAlert').show('fast');
-        setTimeout(() => {
+        $('#text-alert').empty().append('Entrada Inválida');
+        $('#myAlert')
+            .show('fast')
+            .removeClass('alert-success')
+            .addClass('alert-danger');
+        clearTimeout(this.timeAlert);
+        this.timeAlert = setTimeout(() => {
             $('#myAlert').hide('slow');
         }, 2000);
     }
@@ -206,5 +224,34 @@ class ConverterJsonCsv {
             this.textJsonCsv.value = resolve;
         }
     }
+
+    limparResultado(): void {
+        if (!this.longClick) {
+            this.resultJsonCsv.value = '';
+            this.longClick = false;
+        }
+    }
+
+    limparCampos(): void {
+        clearTimeout(this.timeClick);
+        this.textJsonCsv.value = '';
+        this.resultJsonCsv.value = '';
+        this.textFile.innerText = 'Upload de arquivo';
+    }
+
+    copiarResultado(): void {
+        this.resultJsonCsv.select();
+        document.execCommand('copy');
+        $('#text-alert').empty().append('Resultado Copiado');
+        $('#myAlert')
+            .show('fast')
+            .removeClass('alert-danger')
+            .addClass('alert-success');
+        clearTimeout(this.timeAlert);
+        this.timeAlert = setTimeout(() => {
+            $('#myAlert').hide('slow');
+        }, 2000);
+    }
+
 
 }

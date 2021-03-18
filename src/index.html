@@ -13,8 +13,8 @@
         style="height: 100vh;">
 
         <div class="fixed-top mt-5 mw-75 ml-5">
-            <div class="alert alert-danger alert-dismissible collapse float-left mw-50" id="myAlert" role="alert">
-                Entrada Inválida
+            <div class="alert alert-dismissible collapse float-left mw-50" id="myAlert" role="alert">
+                <span id="text-alert"></span>
                 <button type="button" class="close" id="closeAlert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -46,19 +46,20 @@
                             JSON</button>
                     </div>
                     <div class="col col-md-4 mb-3 mb-md-0">
-                        <textarea name="resultJsonCsv" class="form-control mt-3 mt-md-0" id="resultJsonCsv" disabled
+                        <textarea name="resultJsonCsv" class="form-control mt-3 mt-md-0" id="resultJsonCsv" readonly
                             cols="30" rows="10"></textarea>
                         <div class="d-flex justify-content-between mt-3">
                             <button class="btn btn-primary w-25" data-toggle="tooltip" data-placement="top"
-                                title="Limpar os campos">
+                                title="Salvar Resultado">
                                 <i class="fa fa-download fa-lg fa-inverse fa-align-center" aria-hidden="true"></i>
                             </button>
                             <button class="btn btn-danger w-25" data-toggle="tooltip" data-placement="top"
-                                title="Limpar os campos">
+                                title="Segure para limpar todos os campos ou clique para limpar o resultado"
+                                id="limpar-campos">
                                 <i class="fa fa-trash fa-lg fa-inverse fa-align-center" aria-hidden="true"></i>
                             </button>
                             <button class="btn btn-primary w-25" data-toggle="tooltip" data-placement="top"
-                                title="Limpar os campos">
+                                title="Copiar Resultado" id="copiar-resultado">
                                 <i class="fas fa-copy fa-lg fa-align-center"></i>
                             </button>
                         </div>

@@ -1,6 +1,7 @@
-// import 'bootstrap';
-// import './css/stylesheet.scss';
-// import * as $ from 'jquery';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+require("../styles/stylesheet.scss");
+require("bootstrap/dist/js/bootstrap.min.js");
 window.onload = function () {
     new ConverterJsonCsv();
 };
@@ -9,13 +10,16 @@ class ConverterJsonCsv {
         this.textJsonCsv = document.getElementById("textJsonCsv");
         this.incluirNullable = document.getElementById("incluirNullable");
         this.resultJsonCsv = document.getElementById("resultJsonCsv");
+        this.textFile = document.getElementById("text-file");
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
         document.getElementById("converterCsv").onclick = () => this.converterCsv();
         document.getElementById("converterJson").onclick = () => this.converterJson();
-        // document.getElementById("closeAlert").onclick = () => $('#myAlert').hide('slow');
-        this.textJsonCsv.value = `Id,UserName
-1,Sam Smith
-2,Fred Frankly
-1,Zachary Zupers`;
+        document.getElementById("closeAlert").onclick = () => $('#myAlert').hide('slow');
+        document.getElementById("selecao-arquivo").onchange = (ev) => this.selecaoArquivo(ev);
+        this.textJsonCsv.value = `[{"Id": "1","UserName": "Sam Smith","awd": "12"},{"Id": "2","UserName": "Fred Frankly","awd": ""},{"Id": "1","UserName": "Zachary Zupers","awd": ""}]`;
+        this.textFile.innerText = 'Upload de arquivo';
     }
     converterCsv() {
         let jsonConvertido = null;
@@ -40,31 +44,46 @@ class ConverterJsonCsv {
         }
         else {
             let keys = '';
-            if (this.incluirNullable.checked) {
-                let arrayKeys = [];
-                jsonConvertido.map((element) => {
-                    Object.keys(element).forEach(element => {
-                        if (arrayKeys.indexOf(element) === -1)
-                            arrayKeys.push(element);
-                    });
+            let arrayKeys = [];
+            jsonConvertido.map((element) => {
+                Object.keys(element).forEach(element => {
+                    if (arrayKeys.indexOf(element) === -1)
+                        arrayKeys.push(element);
                 });
+            });
+            if (this.incluirNullable.checked) {
                 keys = arrayKeys.join(';');
             }
             else {
-                Object.keys(jsonConvertido[0]).forEach((element, index, array) => {
-                    keys += element + (index === array.length - 1 ? '' : ';');
+                let keysNullable = [];
+                jsonConvertido.map((element) => {
+                    arrayKeys.map((key, index, array) => {
+                        console.log(key, element[key]);
+                        if (!element[key] && keysNullable.indexOf(key) === -1) {
+                            keysNullable.push(key);
+                        }
+                    });
                 });
+                keysNullable.map((key) => {
+                    let index = arrayKeys.indexOf(key);
+                    arrayKeys.splice(index, 1);
+                });
+                keys = arrayKeys.join(';');
             }
-            jsonConvertido.forEach(element => {
+            jsonConvertido.map(element => {
                 let strValues = "";
-                Object.values(element).map((el, i, array) => {
-                    if (this.incluirNullable.checked) {
-                        strValues += el + (i === array.length - 1 ? '' : ';');
-                    }
-                    else if (i < keys.split(';').length) {
-                        strValues += el + (i === keys.split(';').length - 1 ? '' : ';');
-                    }
-                });
+                if (this.incluirNullable.checked) {
+                    arrayKeys.map((key, i, array) => {
+                        strValues += (element[key] ?? '') + (i === array.length - 1 ? '' : ';');
+                    });
+                }
+                else {
+                    Object.keys(element).map((key, i, array) => {
+                        if (arrayKeys.indexOf(key) !== -1) {
+                            strValues += element[key] ?? '' + (i === arrayKeys.length - 1 ? '' : ';');
+                        }
+                    });
+                }
                 str += "\n" + strValues;
             });
             str = keys + str;
@@ -120,14 +139,52 @@ class ConverterJsonCsv {
                 this.alert();
                 return;
             }
+            if (!this.incluirNullable.checked) {
+                let jsonNullable = JSON.parse(jsonConvertido);
+                let objNullable = [];
+                jsonNullable.map((obj) => {
+                    props.map((key) => {
+                        if (!obj[key]) {
+                            objNullable.indexOf(key) !== -1 ? '' : objNullable.push(key);
+                        }
+                    });
+                });
+                if (objNullable.length !== 0) {
+                    jsonNullable.map((obj) => {
+                        objNullable.map((keyNullable) => {
+                            delete obj[keyNullable];
+                        });
+                    });
+                    jsonConvertido = JSON.stringify(jsonNullable);
+                }
+            }
         }
         this.resultJsonCsv.value = jsonConvertido;
     }
     alert() {
-        // $('#myAlert').show('fast');
-        // setTimeout(() => {
-        //     $('#myAlert').hide('slow');
-        // }, 2000);
+        $('#myAlert').show('fast');
+        setTimeout(() => {
+            $('#myAlert').hide('slow');
+        }, 2000);
+    }
+    async selecaoArquivo(event) {
+        const reader = new FileReader();
+        if (event.target.files[0]) {
+            let resolve = await new Promise((resolve) => {
+                reader.readAsDataURL(event.target.files[0]);
+                this.textFile.innerText = event.target.files[0].name;
+                reader.onload = () => {
+                    let str = reader.result.toString().split(',');
+                    resolve(atob(str[1]));
+                };
+            });
+            $("#selecao-arquivo").val('');
+            this.textJsonCsv.value = resolve;
+        }
+    }
+    copiarResultado() {
+        this.resultJsonCsv.select();
+        document.execCommand('copy');
     }
 }
 //# sourceMappingURL=index.js.map
