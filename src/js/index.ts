@@ -1,6 +1,6 @@
 import '../styles/stylesheet.scss';
 import 'bootstrap/dist/js/bootstrap.min.js';
-import { saveAs } from 'file-saver/FileSaver.min.js';
+import { saveAs } from 'file-saver';
 
 window.onload = function () {
     new ConverterJsonCsv();

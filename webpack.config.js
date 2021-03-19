@@ -90,7 +90,6 @@ module.exports = {
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery",
-            _: "file-saver",
             Popper: ['popper.js', 'default'],
         }),
     ]
